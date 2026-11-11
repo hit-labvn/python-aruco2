@@ -1,0 +1,39 @@
+[build-system]
+requires = ["scikit-build-core>=0.12", "pybind11>=2.13"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "python-aruco2"
+version = "0.1.0"
+description = "NumPy Python bindings for rmsalinas/aruco2"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE", "UPSTREAM.md", "vendor/aruco2/LICENSE", "src/aruco2/licenses/*"]
+dependencies = ["numpy>=1.23"]
+
+[project.urls]
+Repository = "https://github.com/hit-labvn/python-aruco2"
+Issues = "https://github.com/hit-labvn/python-aruco2/issues"
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[tool.scikit-build]
+cmake.version = ">=3.24"
+cmake.build-type = "Release"
+build-dir = "build/{wheel_tag}"
+wheel.packages = ["src/aruco2"]
+install.components = ["python-aruco2"]
+sdist.include = ["vendor/aruco2/src/**", "vendor/aruco2/opencv2/**", "vendor/aruco2/opencl/**", "vendor/aruco2/utils/cl2cpp.cmake", "vendor/aruco2/LICENSE"]
+sdist.exclude = ["vendor/aruco2/.git/**", ".venv*/**", "build/**", "dist/**", "*.log"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.cibuildwheel]
+build = "cp3{10,11,12,13,14}-*"
+skip = "*-musllinux_* *-win32 *-manylinux_i686"
+archs = ["auto64"]
+test-requires = ["pytest>=8"]
+test-command = "python -m pytest {project}/tests -p no:cacheprovider -q"
