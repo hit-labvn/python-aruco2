@@ -60,3 +60,23 @@ jobs:
           name: source-distribution
           path: dist/*.tar.gz
           if-no-files-found: error
+
+  publish:
+    name: Publish to PyPI
+    needs: [wheels, sdist]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: pypi
+      url: https://pypi.org/p/python-aruco2
+    permissions:
+      id-token: write
+    steps:
+      - name: Download built distributions
+        uses: actions/download-artifact@v6
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Publish distributions
+        uses: pypa/gh-action-pypi-publish@release/v1

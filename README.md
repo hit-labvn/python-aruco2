@@ -46,7 +46,7 @@ Exposes single/multiple dictionary detection, grid boards (including custom IDs)
 
 ## Continuous integration
 
-GitHub Actions builds and tests CPython 3.10 through 3.14 wheels for Windows x64, Linux x86_64 (manylinux), and macOS Apple Silicon on pushes, pull requests, and manual runs. Download wheels from the artifacts of a successful [Wheels workflow run](https://github.com/hit-labvn/python-aruco2/actions/workflows/wheels.yml). A separate job builds the source archive. CI tests the installed wheel rather than importing the source tree.
+GitHub Actions builds and tests CPython 3.10 through 3.14 wheels for Windows x64, Linux x86_64 (manylinux), and macOS Apple Silicon on pushes, pull requests, and manual runs. Download wheels from the artifacts of a successful [Wheels workflow run](https://github.com/hit-labvn/python-aruco2/actions/workflows/wheels.yml). A separate job builds the source archive. Version tags (`v*`) publish all distributions to PyPI after every build and test succeeds, using the `pypi` GitHub environment and PyPI Trusted Publishing. CI tests the installed wheel rather than importing the source tree.
 
 ## Source and licensing
 
