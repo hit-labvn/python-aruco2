@@ -54,7 +54,7 @@ template <typename T, typename F> py::array draw(const py::array &input, const s
 }
 PYBIND11_MODULE(_native, m) {
     m.doc() = "Standalone NumPy bindings for ArUco2; detection releases the Python GIL";
-    m.attr("__version__") = "0.1.0";
+    m.attr("__version__") = "1.0.0";
     m.attr("upstream_commit") = "c26b030cee4292649be566092812308fa179e871";
     m.attr("opencv_version") = CV_VERSION;
     auto dict = py::enum_<a::DictionaryType>(m, "DictionaryType");
