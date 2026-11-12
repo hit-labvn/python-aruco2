@@ -1,0 +1,7 @@
+python-aruco2
+Copyright 2026 HITLAB contributors
+
+This product includes software developed by:
+- ArUco2 (https://github.com/rmsalinas/aruco2), Apache-2.0
+- OpenCV (https://github.com/opencv/opencv), Apache-2.0
+- pybind11 (https://github.com/pybind/pybind11), BSD-3-Clause

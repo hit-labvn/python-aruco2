@@ -1,6 +1,6 @@
 # Upstream sources
 
-The Python binding, packaging, tests, and CI configuration are MIT-licensed; see the root LICENSE. Third-party files retain the licenses below.
+The Python binding, packaging, tests, and CI configuration are licensed under Apache-2.0; see the root LICENSE and NOTICE. Third-party files retain the licenses below.
 
 ArUco2: https://github.com/rmsalinas/aruco2
 Commit: c26b030cee4292649be566092812308fa179e871
