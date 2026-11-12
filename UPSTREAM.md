@@ -13,3 +13,4 @@ Its license is included in the installed package when building the private copy.
 pybind11: https://github.com/pybind/pybind11, BSD-style license, build dependency.
 Local patch: disabled the OpenCV-internal ../precomp.hpp include in aruco2_dictionary.cpp for standalone compilation.
 Local patch: removed the unused highgui include from aruco2.cpp so a headless OpenCV SDK suffices.
+Local patch: the corner refinement half-window (upstream `min(int(3*max(1, side/34)), 9)`) is configurable through `DetectionParameters.cornerRefinementWinScale`, `cornerRefinementMinWinSize` and `cornerRefinementMaxWinSize`. The default is 0.05 x marker side in [2, 9] px instead of upstream's 3/34 x side in [3, 9] px, so the window stays inside narrow white margins; set 3/34, 3, 9 to reproduce upstream.

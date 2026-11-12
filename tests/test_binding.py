@@ -93,3 +93,30 @@ def test_threaded_detection():
         return [m.id for m in a.detectFiducialMarkers(image,D)]
     with ThreadPoolExecutor(max_workers=4) as pool:
         assert list(pool.map(scan,range(16)))==[[42]]*16
+
+def test_corner_refinement_window_parameters():
+    p = a.DetectionParameters()
+    assert abs(p.cornerRefinementWinScale - 0.05) < 1e-6
+    assert (p.cornerRefinementMinWinSize, p.cornerRefinementMaxWinSize) == (2, 9)
+    img = np.pad(a.getFiducialMarkerImage(D, 7, bitSize=20), 60, constant_values=255)
+    default = a.detectFiducialMarkers(img, D)
+    p.cornerRefinementWinScale = 3 / 34  # upstream window
+    p.cornerRefinementMinWinSize = 3
+    small = a.detectFiducialMarkers(img, D, p)
+    assert [m.id for m in default] == [m.id for m in small] == [7]
+    assert np.abs(default[0].corners - small[0].corners).max() < 1.0
+
+def test_opencv_compatible_api():
+    import aruco2.compat as aruco
+    img = np.pad(a.getGridBoardImage((3, 2), D, bitSize=20), 40, constant_values=255)
+    detector = aruco.ArucoDetector(aruco.getPredefinedDictionary(aruco.DICT_6X6_250), aruco.DetectorParameters())
+    corners, ids, rejected = detector.detectMarkers(img)
+    direct = {m.id: m.corners for m in a.detectFiducialMarkers(img, D)}
+    assert ids.dtype == np.int32 and ids.shape == (len(direct),) and rejected == ()
+    assert all(c.dtype == np.float32 and c.shape == (1, 4, 2) for c in corners)
+    for c, i in zip(corners, ids):
+        assert np.array_equal(c[0], direct[int(i)])
+    assert detector.detectMarkers(np.full((64, 64), 255, np.uint8)) == ((), None, ())
+    assert aruco.getPredefinedDictionary(10).type == aruco.DICT_6X6_250
+    legacy, legacy_ids, _ = aruco.detectMarkers(img, aruco.DICT_6X6_250)
+    assert sorted(legacy_ids.tolist()) == sorted(direct)

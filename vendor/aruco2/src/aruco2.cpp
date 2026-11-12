@@ -33,6 +33,13 @@ struct GPUDictCache {
     cv::UMat u_dict_codes;
 };
 
+// Local patch: corner refinement window from DetectionParameters (upstream: min(int(3*max(1, side/34)), 9); default here 0.05*side in [2, 9]).
+static inline int cornerRefinementHalfWindow(double avrgLen, const DetectionParameters &params) {
+    const int lo = std::max(1, params.cornerRefinementMinWinSize);
+    const int hi = std::max(lo, params.cornerRefinementMaxWinSize);
+    return std::min(std::max(int(params.cornerRefinementWinScale * avrgLen), lo), hi);
+}
+
 /** @brief The MarkerDetector class is detecting the markers in the image passed */
 class MarkerDetector{
 public:
@@ -339,8 +346,7 @@ std::vector<FiducialMarker> MarkerDetector::detect(const cv::UMat &img, const st
             }
         }
         avrgLen /= 4 * num_polygons;
-        int halfwsize =
-            std::min(int(3 * std::max(1.f, float(avrgLen) / float(34))), 9);
+        int halfwsize = cornerRefinementHalfWindow(avrgLen, params);
 
         // 2. Allocate tracking buffers on GPU
         cv::UMat u_candidate_matched(1, num_polygons, CV_32SC1);
@@ -744,7 +750,7 @@ std::vector<FiducialMarker>  MarkerDetector::detect(const cv::Mat &img,   const 
             for(int i=0;i<4;i++)
                 avrgLen+=cv::norm(m.corners[i]-m.corners[(i+1)%4]);
         avrgLen/=4*DetectedMarkers.size();
-        int halfwsize=std::min(int(3*std::max(1.f,float(avrgLen)/float(34))),9);
+        int halfwsize=cornerRefinementHalfWindow(avrgLen, params);
         std::vector<cv::Point2f> Corners;
         for (const auto &m:DetectedMarkers)
             Corners.insert(Corners.end(), m.corners.begin(),m.corners.end());

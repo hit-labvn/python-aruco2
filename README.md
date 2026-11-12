@@ -37,11 +37,22 @@ for marker in markers:
 
 For pose estimation, pass the output of `aruco2.getSolvePnpPoints(marker, markerSize=0.05)` to `cv2.solvePnP`.
 
+### Replacing `cv2.aruco`
+
+`aruco2.compat` mirrors OpenCV's detection API, so existing code only changes its import:
+
+```python
+import aruco2.compat as aruco  # instead of: import cv2.aruco as aruco
+
+detector = aruco.ArucoDetector(aruco.getPredefinedDictionary(aruco.DICT_6X6_250), aruco.DetectorParameters())
+corners, ids, rejected = detector.detectMarkers(gray)  # OpenCV 5 shapes; corners keep sub-pixel precision
+```
+
 ## Notes
 
 - Input images must be `uint8` grayscale `(H, W)` / `(H, W, 1)` or BGR `(H, W, 3)`. Convert 16-bit images first.
 - Do not modify an input array while detection is running on it.
-- Detection parameters default to upstream values. `DetectorParameters` is an alias of `DetectionParameters`.
+- Detection parameters default to upstream values, except the corner refinement window: 5% of the marker side (2–9 px) instead of upstream's ~9%, so dark shapes printed near a marker do not pull its corners. Set `cornerRefinementWinScale = 3/34` and `cornerRefinementMinWinSize = 3` for upstream behaviour. `DetectorParameters` is an alias of `DetectionParameters`.
 - OpenCL/UMat inputs and `drawAxis` are not exposed.
 
 ## Building from source

@@ -48,6 +48,9 @@ class DetectionParameters:
     detectColorMode: int
     gridBitSampling: bool
     harrisThresh: float
+    cornerRefinementWinScale: float
+    cornerRefinementMinWinSize: int
+    cornerRefinementMaxWinSize: int
     def __init__(self) -> None: ...
 DetectorParameters = DetectionParameters
 

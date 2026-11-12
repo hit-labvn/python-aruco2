@@ -138,6 +138,21 @@ struct CV_EXPORTS_W_SIMPLE DetectionParameters {
      */
     CV_PROP_RW float harrisThresh = 80.f;
 
+    /** @brief Corner refinement half-window as a fraction of the average marker side (pixels per pixel).
+     *
+     * Detected corners are refined with cv::cornerSubPix using a half-window of
+     * `clamp(int(cornerRefinementWinScale * averageSide), cornerRefinementMinWinSize, cornerRefinementMaxWinSize)`.
+     * The window must stay on the white margin around each marker, or nearby dark shapes pull the corners.
+     * Default: 0.05, about 60% of a 1/12 marker-side margin (upstream uses 3/34 with a minimum of 3).
+     */
+    CV_PROP_RW float cornerRefinementWinScale = 0.05f;
+
+    /** @brief Smallest corner refinement half-window (pixels). Default: 2. */
+    CV_PROP_RW int cornerRefinementMinWinSize = 2;
+
+    /** @brief Largest corner refinement half-window (pixels). Default: 9. */
+    CV_PROP_RW int cornerRefinementMaxWinSize = 9;
+
 };
 
 

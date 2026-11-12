@@ -76,6 +76,7 @@ PYBIND11_MODULE(_native, m) {
     PARAM(boxFilterSize); PARAM(thres); PARAM(minSize); PARAM(maxAttemptsPerCandidate);
     PARAM(maxTimesRevisited); PARAM(errorCorrectionRate); PARAM(maxErroneousBitsInBorderRate);
     PARAM(detectColorMode); PARAM(gridBitSampling); PARAM(harrisThresh);
+    PARAM(cornerRefinementWinScale); PARAM(cornerRefinementMinWinSize); PARAM(cornerRefinementMaxWinSize);
 #undef PARAM
     m.attr("DetectorParameters") = m.attr("DetectionParameters");
     py::class_<a::FiducialMarker>(m,"FiducialMarker")
