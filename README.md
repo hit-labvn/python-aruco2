@@ -5,7 +5,7 @@
 [![Wheels](https://github.com/hit-labvn/python-aruco2/actions/workflows/wheels.yml/badge.svg?branch=main)](https://github.com/hit-labvn/python-aruco2/actions/workflows/wheels.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
-Python bindings for [ArUco2](https://github.com/rmsalinas/aruco2), a fast fiducial marker detector. Self-contained: OpenCV is linked statically, so the only runtime dependency is NumPy.
+Python bindings for [ArUco2](https://github.com/rmsalinas/aruco2), a fast fiducial marker detector.
 
 ## Features
 
@@ -26,27 +26,19 @@ Prebuilt wheels are available for CPython 3.10–3.14 on Windows x64, Linux x86_
 ## Quick start
 
 ```python
-import aruco2
-
-image = aruco2.getFiducialMarkerImage(aruco2.DICT_6X6_250, 42)
-markers = aruco2.detectFiducialMarkers(image, aruco2.DICT_6X6_250)
-
-for marker in markers:
-    print(marker.id, marker.corners)  # corners: float32 (4, 2), clockwise
-```
-
-For pose estimation, pass the output of `aruco2.getSolvePnpPoints(marker, markerSize=0.05)` to `cv2.solvePnP`.
-
-### Replacing `cv2.aruco`
-
-`aruco2.compat` mirrors OpenCV's detection API, so existing code only changes its import:
-
-```python
+import cv2
 import aruco2.compat as aruco  # instead of: import cv2.aruco as aruco
 
+image = cv2.imread("markers.png", cv2.IMREAD_GRAYSCALE)
+
 detector = aruco.ArucoDetector(aruco.getPredefinedDictionary(aruco.DICT_6X6_250), aruco.DetectorParameters())
-corners, ids, rejected = detector.detectMarkers(gray)  # OpenCV 5 shapes; corners keep sub-pixel precision
+corners, ids, rejected = detector.detectMarkers(image)
+print(ids, corners[0])  # ids: int32 (N,); corners: float32 (1, 4, 2) per marker, sub-pixel
 ```
+
+`aruco2.compat` mirrors OpenCV's detection API and returns OpenCV 5 shapes, so code written for `cv2.aruco` only changes its import.
+
+The native API, `aruco2.detectFiducialMarkers(image, aruco2.DICT_6X6_250)`, returns markers with `id` and `corners`. For pose estimation, pass `aruco2.getSolvePnpPoints(marker, markerSize=0.05)` to `cv2.solvePnP`.
 
 ## Notes
 
